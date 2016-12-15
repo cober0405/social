@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
   <head>
     <title>{{title}}</title>
     <link rel='stylesheet' href='{{@static_url}}/styles/style.css' />
       {{{sections.head}}}
   </head>
-  <body>
+  <body ng-controller="MainController">
     {{{body}}}
     <script src="{{@static_url}}/scripts/common.js"></script>
+    <script src="{{@static_url}}/scripts/angular.js"></script>
     {{{sections.foot}}}
   </body>
 </html>
