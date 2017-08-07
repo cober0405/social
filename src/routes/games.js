@@ -1,0 +1,12 @@
+/**
+ * Created by B-04 on 2017/7/25.
+ */
+var express = require('express');
+var router = express.Router();
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+    res.redirect("/users");
+});
+
+module.exports = router;

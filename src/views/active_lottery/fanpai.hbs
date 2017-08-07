@@ -1,0 +1,64 @@
+
+{{#section "head"}}
+    <link rel='stylesheet' href='{{@static_url}}/styles/activelottery.css'/>
+    <link rel='stylesheet' href='{{@static_url}}/styles/styleCJ.css'/>
+    <link rel='stylesheet' href='{{@static_url}}/styles/fanpai.css'/>
+{{/section}}
+{{#section "foot"}}
+    <script src="{{@static_url}}/scripts/active/active2fanpai.js"></script>
+{{/section}}
+
+<div class="frm">
+    <div class="top">
+        <!--<div class="user-info">-->
+            <!--<div class="left">-->
+                <!--<img class="headimg" src="{{@static_url}}/images/active-imgs/head.png" alt="">-->
+                <!--<div>-->
+                    <!--<span class="user-name">小鸡哔哔哟</span>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="right">-->
+                <!--<span>\{{binfo.personQuota}}</span>-->
+                <!--<span>柠檬点</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="list">
+            <div class="big-prize">大奖记录</div>
+
+            <div id="andyscroll">
+                <div id="scrollmessage">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fuli">
+        <div class="big-prize">福利区</div>
+        <div class="fanpai">
+            <div id="containerfanpai"></div>
+            <!--<div id="topbar"></div>-->
+        </div>
+    </div>
+    <!--<div class="center cl-xipai" style="">点击洗牌</div>-->
+    <div class="fuliquan">
+        <div class="big-prize">福利券</div>
+        <div class="box">
+            <!--<div class="left">-->
+                <!--<div id="commonTicket" class="quan">普通券</div>-->
+                <!--<div id="commonno" class="no">\{{binfo.lottery1}}张</div>-->
+            <!--</div>-->
+            <div class="right">
+                <div id="seniorTicket" class="quan">精英券</div>
+                <div id="seniorno" class="no">\{{binfo.lottery2}}张</div>
+                <!--<img id="add-senior" class="add" src="{{@static_url}}/images/active-imgs/jingyin-add.png" alt="">-->
+            </div>
+        </div>
+    </div>
+</div>
+{{> addSenior}}
+
+<script src="{{@static_url}}/scripts/deck.js"></script>
+<script src="{{@static_url}}/scripts/fanpai.js"></script>
+

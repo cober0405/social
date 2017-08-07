@@ -3,22 +3,19 @@
 {{/section}}
 
 <h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<p>Welcome to {{title}} <a href="/users/login">点击登录</a></p>
 <div class="photo">
 </div>
 <div compile="testHtml"></div>
 
-<clickable foo="foo" bar="bar"></clickable>
+<clickable foo="foo" bar="bar" test-data="testData"></clickable>
+
+<input ng-model="name" />
+Name updated: \{{updated}} times.
 
 
-<button ng-click="open()">点击打开</button>
-<ul>
-    <li ng-repeat="item in list" ng-show="bTrue">
-        <div ng-bind="$index"></div>
-        <div class="photo">
-        </div>
-        <video poster="\{{add(item)}}">
-            <source ng-src="\{{add(item)}}"/>
-        </video>
-    </li>
-</ul>
+<input ng-model="user.name" />
+userName updated: \{{userUpdated}} times.
+
+
+<p>点击查看数据：<a href="/users/check">查看排行榜</a></p>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    /**
+     * Created by B-04 on 2017/7/10.
+     */
+
+    /*
+     数据模型配置数据：
+     benchmark：基准场次，此值影响场次加权的基准值
+     baseWeight：基础加权，此值影响初始加权
+     fullWeightRate: 加权为1时的倍率,此值影响基准场次的多少倍加权能达到1
+     baseScore1：得分基准1，此值影响level1的得分
+     baseScore2：得分基准2，此值影响level2的得分
+     baseScore3：得分基准3，此值影响level3的得分
+     hexagonBaseData: 六边形维度基准值配置
+     name：维度名，此值记录维度名称
+     level1：维度判定基准1，此值取自采样数据中的平均值
+     level2：维度判定基准2，此值取自采样数据中前5%大神的平均值
+     level3：维度判定基准3，此值取自于前两个等级数据得出的满分修正数值
+     weight: 对总能力值的权重，此值决定该能力值对总能力得分的影响大小
+     */
+    var dataModel = {
+        baseData: {
+            benchmark: 40,
+            fullWeightRate: 2,
+            baseWeight: 0.5,
+            baseScore1: 60,
+            baseScore2: 95,
+            baseScore3: 100
+        },
+        hexagonBaseData: {
+            0: {
+                name: 'GPM',
+                level1: 480,
+                level2: 700,
+                level3: 1350,
+                weight: 1
+            },
+            1: {
+                name: 'DPM',
+                level1: 3500,
+                level2: 8000,
+                level3: 12000,
+                weight: 1
+            },
+            2: {
+                name: 'A',
+                level1: 6.31,
+                level2: 12.6,
+                level3: 18.9,
+                weight: 1
+            },
+            3: {
+                name: 'D',
+                level1: 4.91,
+                level2: 2.45,
+                level3: 1.2,
+                weight: 1
+            },
+            4: {
+                name: 'KDA',
+                level1: 2.35,
+                level2: 4.5,
+                level3: 7,
+                weight: 1
+            }
+        }
+    };
+
+    //核心算法：modelState-五维状态码，data-某维度得分，totalMatches-玩家总场数
+    function calScore(modelState, data, totalMatches) {
+        var thisModel = dataModel.hexagonBaseData[modelState];
+        if (thisModel) {
+            var base1 = dataModel.baseData.baseScore1;
+            var base2 = dataModel.baseData.baseScore2;
+            var base3 = dataModel.baseData.baseScore3;
+            var level1 = thisModel.level1;
+            var level2 = thisModel.level2;
+            var level3 = thisModel.level3;
+            var rData = 0;
+            if (thisModel.name == 'D') {
+                if (data >= 3 * level1) {
+                    rData = 0;
+                } else if (data > level1 && data < 3 * level1) {
+                    rData = base1 - base1 * (data - level1) / (2 * level1);
+                } else if (data <= level1 && data > level2) {
+                    rData = base2 - (base2 - base1) * (data - level2) / (level1 - level2);
+                } else if (data <= level2 && data > level3) {
+                    rData = base3 - (base3 - base2) * (data - level3) / (level2 - level3);
+                } else if (data <= level3 && data >= 0) {
+                    rData = 100;
+                }
+            } else {
+                if (data >= 0 && data < level1) {
+                    rData = base1 * data / level1;
+                } else if (data >= level1 && data < level2) {
+                    rData = base1 + (base2 - base1) * (data - level1) / (level2 - level1);
+                } else if (data >= level2 && data < level3) {
+                    rData = base2 + (base3 - base2) * (data - level2) / (level3 - level2);
+                } else if (data >= level3) {
+                    rData = 100;
+                }
+            }
+            return (rData * calWeight(totalMatches)).toFixed(1);
+        } else {
+            console.log('error data');
+        }
+    }
+    //场次加权
+    function calWeight(num) {
+        var weight = 0;
+        var baseWeight = dataModel.baseData.baseWeight;
+        var benchmark = dataModel.baseData.benchmark;
+        var fullWeightRate = dataModel.baseData.fullWeightRate;
+        if (num >= fullWeightRate * benchmark) {
+            weight = 1;
+        } else if (num > 0 && num < fullWeightRate * benchmark) {
+            weight = baseWeight + (1 - baseWeight) * num / (fullWeightRate * benchmark);
+        }
+        return weight;
+    }
+    //计算六边形数值
+    function calHexagonData(arr, totalMatches) {
+        var fullWeightScore = 0;
+        var thisWeightScore = 0;
+        var allData = {
+            data: [{
+                name: '',
+                data: 0,
+                score: 0
+            }, {
+                name: '',
+                data: 0,
+                score: 0
+            }, {
+                name: '',
+                data: 0,
+                score: 0
+            }, {
+                name: '',
+                data: 0,
+                score: 0
+            }, {
+                name: '',
+                data: 0,
+                score: 0
+            }],
+            all: 0,
+            totalMatches: totalMatches
+        };
+        for (var i = 0; i < arr.length; i++) {
+            allData.data[i].score = calScore(i, arr[i], totalMatches);
+            allData.data[i].data = arr[i];
+            allData.data[i].name = dataModel.hexagonBaseData[i].name;
+            fullWeightScore += 100 * dataModel.hexagonBaseData[i].weight;
+            thisWeightScore += allData.data[i].score * dataModel.hexagonBaseData[i].weight;
+            console.log(allData.data[i].name, allData.data[i].score);
+        }
+        allData.all = (100 * thisWeightScore / fullWeightScore).toFixed(1);
+        console.log('all', allData.all);
+        return allData;
+    }
+</script>
+<body>
+算法测试
+</body>
+</html>

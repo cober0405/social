@@ -2,6 +2,7 @@
 !.gitignore
 !gulpfile.js
 !package.json
+!process.json
 !src/
 !README.md
 !bin/
